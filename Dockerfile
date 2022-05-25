@@ -1,12 +1,12 @@
-FROM amd64/alpine:3.14
+FROM amd64/alpine:3.16
 
 ENV COMPOSER_ALLOW_SUPERUSER="1" \
-    COMPOSER_VERSION="2.2.4" \
-    COMPOSER_SHA512="90d6f1b313ac40f98e9dcacc0f5d98ebcd43453d2d93647893e51c7a1c4dde8b17aafc17f5030309d3ce67d99943ea389003c6f8cc6d2f3e731dfe0274dc16d1"
+    COMPOSER_VERSION="2.3.5" \
+    COMPOSER_SHA384="55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae"
 
 RUN apk update && \
     apk add --no-cache openssh-client bash subversion p7zip coreutils make patch tini unzip zip git && \
-    apk add --no-cache php7-cli php7-phar php7-mcrypt php7-openssl php7-json php7-zip php7-curl php7-ctype php7-common php7-mbstring php7-fileinfo && \
+    apk add --no-cache php81-cli php81-phar php81-openssl php81-json php81-zip php81-curl php81-ctype php81-common php81-mbstring php81-fileinfo && \
     rm -rf /var/cache/apk/*
 
 ARG TIMEZONE="UTC"
@@ -14,10 +14,11 @@ ARG TIMEZONE="UTC"
 RUN apk add --no-cache tzdata && \
     cp -r /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     echo "${TIMEZONE}" > /etc/timezone && \
-    sed -i "s|;*date.timezone\s*=\s*.*|date.timezone = ${TIMEZONE}|i" /etc/php7/php.ini && \
+    ln -s /usr/bin/php81 /usr/bin/php && \
+    sed -i "s|;*date.timezone\s*=\s*.*|date.timezone = ${TIMEZONE}|i" /etc/php81/php.ini && \
     wget -O /tmp/installer.php https://getcomposer.org/installer && \
-    echo ${COMPOSER_SHA512} /tmp/installer.php | sha512sum --strict --check && \
-    php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} && \
+    echo ${COMPOSER_SHA384} /tmp/installer.php | sha384sum --strict --check && \
+    php81 /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} && \
     rm -f /tmp/installer.php && \
     /usr/bin/composer --ansi --version --no-interaction ; \
     /usr/bin/composer diagnose ; \
