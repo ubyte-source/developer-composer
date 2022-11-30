@@ -1,4 +1,4 @@
-FROM amd64/alpine:3.16
+FROM amd64/alpine:3.17
 
 ENV COMPOSER_ALLOW_SUPERUSER="1" \
     COMPOSER_VERSION="2.3.5" \
