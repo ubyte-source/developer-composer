@@ -14,7 +14,6 @@ ARG TIMEZONE="UTC"
 RUN apk add --no-cache tzdata && \
     cp -r /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
     echo "${TIMEZONE}" > /etc/timezone && \
-    ln -s /usr/bin/php81 /usr/bin/php && \
     sed -i "s|;*date.timezone\s*=\s*.*|date.timezone = ${TIMEZONE}|i" /etc/php81/php.ini && \
     wget -O /tmp/installer.php https://getcomposer.org/installer && \
     echo ${COMPOSER_SHA384} /tmp/installer.php | sha384sum --strict --check && \
